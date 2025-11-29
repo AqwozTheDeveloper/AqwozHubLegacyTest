@@ -60,6 +60,8 @@ local aimbotScripts = loadModule("aimbotScripts.luau", "https://raw.githubuserco
 aimbotScripts.init()
 local labelsScripts = loadModule("labelsScripts.luau", "https://raw.githubusercontent.com/AqwozTheDeveloper/AqwozHubLegacyTest/refs/heads/main/AqwozHub-main/labelsScripts.luau")
 labelsScripts.init()
+local Settings = loadModule("settingsManager.luau", "https://raw.githubusercontent.com/AqwozTheDeveloper/AqwozHubLegacyTest/refs/heads/main/AqwozHub-main/settingsManager.luau")
+Settings.init()
 
 -- Window
 local Window = Rayfield:CreateWindow({
@@ -98,19 +100,21 @@ MainTab:CreateParagraph({Title = "Welcome!", Content = "Hello, this script is de
 -- Vision Tab
 VisionTab:CreateToggle({
    Name = "Enable ESP",
-   CurrentValue = false,
+   CurrentValue = Settings.get("ESPToggle") == true,
    Flag = "ESPToggle", -- A flag is the identifier for the configuration file
    Callback = function(Value)
         visionScripts.toggleESP(Value)
+        Settings.set("ESPToggle", Value)
    end,
 })
 
 VisionTab:CreateToggle({
    Name = "Show Player Labels",
-   CurrentValue = false,
+   CurrentValue = Settings.get("LabelsToggle") == true,
    Flag = "LabelsToggle",
    Callback = function(Value)
         labelsScripts.toggleLabels(Value)
+        Settings.set("LabelsToggle", Value)
    end,
 })
 
@@ -119,28 +123,31 @@ CombatTab:CreateSection("Aimbot Settings")
 
 CombatTab:CreateToggle({
    Name = "Enable Aimbot",
-   CurrentValue = false,
+   CurrentValue = Settings.get("AimbotToggle") == true,
    Flag = "AimbotToggle",
    Callback = function(Value)
         aimbotScripts.toggleAimbot(Value)
+        Settings.set("AimbotToggle", Value)
    end,
 })
 
 CombatTab:CreateToggle({
    Name = "Team Check",
-   CurrentValue = false,
+   CurrentValue = Settings.get("TeamCheck") == true,
    Flag = "TeamCheck",
    Callback = function(Value)
         aimbotScripts.toggleTeamCheck(Value)
+        Settings.set("TeamCheck", Value)
    end,
 })
 
 CombatTab:CreateToggle({
    Name = "Wall Check",
-   CurrentValue = false,
+   CurrentValue = Settings.get("WallCheck") == true,
    Flag = "WallCheck",
    Callback = function(Value)
         aimbotScripts.toggleWallCheck(Value)
+        Settings.set("WallCheck", Value)
    end,
 })
 
@@ -149,10 +156,11 @@ CombatTab:CreateSlider({
    Range = {1, 10},
    Increment = 1,
    Suffix = "",
-   CurrentValue = 5,
+   CurrentValue = Settings.get("Smoothing") or 5,
    Flag = "Smoothing",
    Callback = function(Value)
         aimbotScripts.setSmoothing(Value)
+        Settings.set("Smoothing", Value)
    end,
 })
 
@@ -161,10 +169,11 @@ CombatTab:CreateSlider({
    Range = {10, 500},
    Increment = 10,
    Suffix = "px",
-   CurrentValue = 200,
+   CurrentValue = Settings.get("FOV") or 200,
    Flag = "FOV",
    Callback = function(Value)
         aimbotScripts.setFOV(Value)
+        Settings.set("FOV", Value)
    end,
 })
 
@@ -172,19 +181,25 @@ CombatTab:CreateSection("Targeting")
 
 CombatTab:CreateToggle({
    Name = "Target Head",
-   CurrentValue = true,
+   CurrentValue = (Settings.get("TargetPart") or "Head") == "Head",
    Flag = "TargetHead",
    Callback = function(Value)
-        if Value then aimbotScripts.setTargetPart("Head") end
+        if Value then
+            aimbotScripts.setTargetPart("Head")
+            Settings.set("TargetPart", "Head")
+        end
    end,
 })
 
 CombatTab:CreateToggle({
    Name = "Target UpperTorso",
-   CurrentValue = false,
+   CurrentValue = (Settings.get("TargetPart") or "Head") == "UpperTorso",
    Flag = "TargetUpperTorso",
    Callback = function(Value)
-        if Value then aimbotScripts.setTargetPart("UpperTorso") end
+        if Value then
+            aimbotScripts.setTargetPart("UpperTorso")
+            Settings.set("TargetPart", "UpperTorso")
+        end
    end,
 })
 
@@ -193,10 +208,11 @@ CombatTab:CreateSlider({
    Range = {5, 180},
    Increment = 5,
    Suffix = "deg",
-   CurrentValue = 180,
+   CurrentValue = Settings.get("MaxAngle") or 180,
    Flag = "MaxAngle",
    Callback = function(Value)
         aimbotScripts.setMaxAngle(Value)
+        Settings.set("MaxAngle", Value)
    end,
 })
 
@@ -205,10 +221,11 @@ CombatTab:CreateSlider({
    Range = {0, 1000},
    Increment = 50,
    Suffix = "studs",
-   CurrentValue = 0,
+   CurrentValue = Settings.get("MaxDistance") or 0,
    Flag = "MaxDistance",
    Callback = function(Value)
         aimbotScripts.setMaxDistance(Value)
+        Settings.set("MaxDistance", Value)
    end,
 })
 
@@ -216,37 +233,41 @@ CombatTab:CreateSection("Aim Assist UI")
 
 CombatTab:CreateToggle({
    Name = "Hold to Aim (RMB)",
-   CurrentValue = false,
+   CurrentValue = Settings.get("HoldAim") == true,
    Flag = "HoldAim",
    Callback = function(Value)
         aimbotScripts.toggleHoldToAim(Value)
+        Settings.set("HoldAim", Value)
    end,
 })
 
 CombatTab:CreateToggle({
    Name = "Show FOV Circle",
-   CurrentValue = false,
+   CurrentValue = Settings.get("FOVCircle") == true,
    Flag = "FOVCircle",
    Callback = function(Value)
         aimbotScripts.toggleFOVCircle(Value)
+        Settings.set("FOVCircle", Value)
    end,
 })
 
 CombatTab:CreateToggle({
    Name = "Dynamic Smoothing",
-   CurrentValue = false,
+   CurrentValue = Settings.get("DynamicSmoothing") == true,
    Flag = "DynamicSmoothing",
    Callback = function(Value)
         aimbotScripts.toggleDynamicSmoothing(Value)
+        Settings.set("DynamicSmoothing", Value)
    end,
 })
 
 CombatTab:CreateToggle({
    Name = "Lock Cursor to Target",
-   CurrentValue = false,
+   CurrentValue = Settings.get("PointerLock") == true,
    Flag = "PointerLock",
    Callback = function(Value)
         aimbotScripts.togglePointerLock(Value)
+        Settings.set("PointerLock", Value)
    end,
 })
 
@@ -254,9 +275,29 @@ CombatTab:CreateSection("Key Toggle")
 
 CombatTab:CreateToggle({
    Name = "Enable F Key Toggle",
-   CurrentValue = false,
+   CurrentValue = Settings.get("KeyToggle") == true,
    Flag = "KeyToggle",
    Callback = function(Value)
         aimbotScripts.toggleKeyToggle(Value)
+        Settings.set("KeyToggle", Value)
    end,
 })
+
+do
+    local s = Settings.all()
+    if s.ESPToggle then visionScripts.toggleESP(true) end
+    if s.LabelsToggle then labelsScripts.toggleLabels(true) end
+    aimbotScripts.setSmoothing(s.Smoothing)
+    aimbotScripts.setFOV(s.FOV)
+    aimbotScripts.setTargetPart(s.TargetPart)
+    aimbotScripts.setMaxAngle(s.MaxAngle)
+    aimbotScripts.setMaxDistance(s.MaxDistance)
+    aimbotScripts.toggleTeamCheck(s.TeamCheck)
+    aimbotScripts.toggleWallCheck(s.WallCheck)
+    aimbotScripts.toggleHoldToAim(s.HoldAim)
+    aimbotScripts.toggleFOVCircle(s.FOVCircle)
+    aimbotScripts.toggleDynamicSmoothing(s.DynamicSmoothing)
+    aimbotScripts.togglePointerLock(s.PointerLock)
+    aimbotScripts.toggleKeyToggle(s.KeyToggle)
+    aimbotScripts.toggleAimbot(s.AimbotToggle)
+end
